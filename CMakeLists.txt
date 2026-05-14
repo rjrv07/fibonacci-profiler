@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.3.2)
+cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
@@ -14,7 +14,29 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sc)
 
+
+project(benchmark)
+add_executable(${PROJECT_NAME} benchmark.cpp)
+target_link_libraries(${PROJECT_NAME} sc-timer)
+
+project(verify)
+add_executable(${PROJECT_NAME} verify.cpp)
+target_link_libraries(${PROJECT_NAME} sc-timer)
+
+project(plot)
+
 find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
+
+# Verify matplotlib is available
+execute_process(
+        COMMAND ${Python3_EXECUTABLE} -c "import matplotlib"
+        RESULT_VARIABLE MATPLOTLIB_NOT_FOUND
+        ERROR_QUIET
+)
+
+if(MATPLOTLIB_NOT_FOUND)
+        message(FATAL_ERROR "Python3 matplotlib not found!")
+endif()
 
 FetchContent_Declare(
         matplotlib_cpp
@@ -32,15 +54,6 @@ if (APPLE)
                 "${matplotlib_cpp_SOURCE_DIR}/matplotlibcpp.h")
 endif ()
 
-project(benchmark)
-add_executable(${PROJECT_NAME} benchmark.cpp)
-target_link_libraries(${PROJECT_NAME} sc-timer)
-
-project(verify)
-add_executable(${PROJECT_NAME} verify.cpp)
-target_link_libraries(${PROJECT_NAME} sc-timer)
-
-project(plot)
 add_executable(${PROJECT_NAME} plot.cpp)
 target_include_directories(${PROJECT_NAME} PRIVATE ${matplotlib_cpp_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} matplotlib_cpp sc-timer)

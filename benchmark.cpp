@@ -14,16 +14,16 @@ int main(int argc, char* argv[]) {
 
         ll maxMicro;
         try {
-                maxMicro = stoi(argv[1]) * 1000;
+                maxMicro = stoll(argv[1]) * 1000;
         } catch (exception) {
-                cerr << "Error: <max ms> must be a positive integer!";
+                cerr << "Error: <max ms> must be a positive integer!" << endl;
                 return 1;
         }
 
         ll num;
         if (argc == 3) {
                 try {
-                        num = stoi(argv[2]);
+                        num = stoll(argv[2]);
                 } catch (exception) {
                         cerr << "Error: [num to calc] must be a non-negative integer!";
                         return 1;
@@ -33,9 +33,10 @@ int main(int argc, char* argv[]) {
         int maxw = 0;
         for (auto [name, _] : fib::fibs) maxw = max(maxw, static_cast<int>(name.size()));
 
+        sc::timer t;
         for (auto [name, fib] : fib::fibs) {
-                sc::timer t;
                 t.stop();
+                t.reset();
                 if (argc == 3) {
                         t.start();
                         fib(num);
@@ -52,7 +53,8 @@ int main(int argc, char* argv[]) {
                         cout << left << setw(maxw + 2) 
                                 << (name + ": ") 
                                 << right << setw(20) 
-                                << n - 1 << endl;
+                                << n - 1 
+                                << endl;
                 }
         }
 
