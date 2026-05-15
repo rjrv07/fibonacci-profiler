@@ -1,8 +1,16 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.28)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+option(CMAKE_EXPORT_COMPILE_COMMANDS "Export compile commands for LSP" ON)
+if (CMAKE_EXPORT_COMPILE_COMMANDS)
+        cmake_language(DEFER CALL execute_process
+        COMMAND ${CMAKE_COMMAND} -E create_symlink
+            "${CMAKE_BINARY_DIR}/compile_commands.json"
+            "${CMAKE_SOURCE_DIR}/compile_commands.json"
+        )
+endif()
 
 include(FetchContent)
 FetchContent_Declare(
